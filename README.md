@@ -87,14 +87,17 @@ rankpilot/
 ## Quick Start (Local Development)
 
 ### 1. Prerequisites
-- Portable Node.js 22 LTS (installed at `.tools/node` on this machine) or system Node.js $\ge 22.12$.
-- No Docker needed by default: RankPilot uses an embedded PostgreSQL instance storing data in `.data/postgres`.
+- Node.js >= 22.12 (Node.js 22 LTS recommended)
+- Embedded PostgreSQL is included out-of-the-box (no external database installation needed for local dev)
 
 ### 2. Setup & Seed
-```powershell
-$root = "C:\Users\Mohammad Tanveer\.gemini\antigravity\scratch\rankpilot"
-$env:PATH = "$root\.tools\node;$env:PATH"
-Set-Location $root
+```bash
+# Clone the repository
+git clone https://github.com/ignitefitness455-dotcom/rankpilot.git
+cd rankpilot
+
+# Install dependencies
+npm install
 
 # Initialize .env, generate PWA icons, start embedded Postgres & apply migrations + RLS
 npm run setup
@@ -104,13 +107,13 @@ npm run seed
 ```
 
 ### 3. Run Development Server
-```powershell
+```bash
 npm run dev
 # Web application available at http://localhost:3000
 ```
 
 ### 4. Run Background Worker (Optional in Dev)
-```powershell
+```bash
 npm run worker
 # Polls queued crawls and automated report schedules
 ```
