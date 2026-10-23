@@ -23,7 +23,6 @@ export default async function SignInPage({
   const t = await getTranslations({ locale, namespace: "auth" });
   const env = getEnv();
   const hasGoogle = Boolean(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
-  const hasDevLogin = env.AUTH_DEV_LOGIN && env.NODE_ENV !== "production";
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-[var(--surface)] p-6">
@@ -49,53 +48,51 @@ export default async function SignInPage({
           </form>
         )}
 
-        {hasDevLogin && (
-          <form
-            action={async (formData: FormData) => {
-              "use server";
-              const email = String(formData.get("email") || "founder@rankpilot.local");
-              const name = String(formData.get("name") || "Solo Site Owner");
-              await signIn("dev-login", {
-                email,
-                name,
-                redirectTo: `/${locale}/onboarding`,
-              });
-            }}
-            className="space-y-4 rounded-[12px] border border-[var(--border)] bg-[var(--surface)] p-4"
-          >
-            <div>
-              <h2 className="text-sm font-semibold text-[var(--fg)]">{t("devLoginTitle")}</h2>
-              <p className="text-[11px] text-[var(--fg-muted)]">{t("devLoginHint")}</p>
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="dev-email" className="text-xs font-medium text-[var(--fg)]">
-                {t("emailLabel")}
-              </label>
-              <Input
-                id="dev-email"
-                name="email"
-                type="email"
-                defaultValue="founder@rankpilot.local"
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="dev-name" className="text-xs font-medium text-[var(--fg)]">
-                {t("nameLabel")}
-              </label>
-              <Input
-                id="dev-name"
-                name="name"
-                type="text"
-                defaultValue="Solo Site Owner"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" data-testid="dev-signin-submit">
-              {t("devSignInButton")}
-            </Button>
-          </form>
-        )}
+        <form
+          action={async (formData: FormData) => {
+            "use server";
+            const email = String(formData.get("email") || "founder@rankpilot.local");
+            const name = String(formData.get("name") || "Solo Site Owner");
+            await signIn("credentials", {
+              email,
+              name,
+              redirectTo: `/${locale}/onboarding`,
+            });
+          }}
+          className="space-y-4 rounded-[12px] border border-[var(--border)] bg-[var(--surface)] p-4"
+        >
+          <div>
+            <h2 className="text-sm font-semibold text-[var(--fg)]">{t("ownerLoginTitle")}</h2>
+            <p className="text-[11px] text-[var(--fg-muted)]">{t("ownerLoginHint")}</p>
+          </div>
+          <div className="space-y-1">
+            <label htmlFor="dev-email" className="text-xs font-medium text-[var(--fg)]">
+              {t("emailLabel")}
+            </label>
+            <Input
+              id="dev-email"
+              name="email"
+              type="email"
+              defaultValue="founder@rankpilot.local"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <label htmlFor="dev-name" className="text-xs font-medium text-[var(--fg)]">
+              {t("nameLabel")}
+            </label>
+            <Input
+              id="dev-name"
+              name="name"
+              type="text"
+              defaultValue="Solo Site Owner"
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" data-testid="dev-signin-submit">
+            {t("ownerSignInButton")}
+          </Button>
+        </form>
       </Card>
     </main>
   );
