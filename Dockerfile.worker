@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1
+# RankPilot background worker (queued crawls + scheduled reports/email).
+# Build: docker build -f Dockerfile.worker -t rankpilot-worker .
+# Also used as the one-off migration job: docker run --rm rankpilot-worker npm run db:migrate
+
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production \
+    EMBEDDED_PG=false
+RUN addgroup -S rankpilot && adduser -S rankpilot -G rankpilot
+COPY --from=deps --chown=rankpilot:rankpilot /app/node_modules ./node_modules
+COPY --chown=rankpilot:rankpilot . .
+USER rankpilot
+CMD ["npm", "run", "worker"]

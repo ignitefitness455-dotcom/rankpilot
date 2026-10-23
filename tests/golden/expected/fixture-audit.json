@@ -1,0 +1,234 @@
+{
+  "overallScore": 50,
+  "categories": {
+    "technical": 0,
+    "on_page": 45,
+    "content": 82,
+    "links": 70,
+    "performance": 74,
+    "ai_search": 71
+  },
+  "countsBySeverity": {
+    "critical": 6,
+    "warning": 16,
+    "info": 5
+  },
+  "findings": [
+    {
+      "id": "AI-BOTS-BLOCKED",
+      "category": "ai_search",
+      "severity": "warning",
+      "affected_count": 2,
+      "impact": 4,
+      "effort": 1
+    },
+    {
+      "id": "AI-PROMPT-INJECTION",
+      "category": "ai_search",
+      "severity": "critical",
+      "affected_count": 1,
+      "impact": 5,
+      "effort": 2
+    },
+    {
+      "id": "CONT-NEAR-DUPLICATE",
+      "category": "content",
+      "severity": "warning",
+      "affected_count": 3,
+      "impact": 4,
+      "effort": 3
+    },
+    {
+      "id": "CONT-THIN-PAGE",
+      "category": "content",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 3
+    },
+    {
+      "id": "LINK-BROKEN-INTERNAL",
+      "category": "links",
+      "severity": "critical",
+      "affected_count": 1,
+      "impact": 5,
+      "effort": 1
+    },
+    {
+      "id": "LINK-GENERIC-ANCHOR",
+      "category": "links",
+      "severity": "info",
+      "affected_count": 1,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "id": "LINK-ORPHAN-PAGE",
+      "category": "links",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "id": "ONPAGE-H1-MISSING",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 1
+    },
+    {
+      "id": "ONPAGE-H1-MULTIPLE",
+      "category": "on_page",
+      "severity": "info",
+      "affected_count": 1,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "id": "ONPAGE-HEADING-SKIP",
+      "category": "on_page",
+      "severity": "info",
+      "affected_count": 1,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "id": "ONPAGE-IMG-ALT-MISSING",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 3,
+      "effort": 1
+    },
+    {
+      "id": "ONPAGE-META-DUP",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 3,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "id": "ONPAGE-META-MISSING",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 3,
+      "effort": 1
+    },
+    {
+      "id": "ONPAGE-SCHEMA-MISSING",
+      "category": "on_page",
+      "severity": "info",
+      "affected_count": 5,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "id": "ONPAGE-TITLE-DUP",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 3,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "id": "ONPAGE-TITLE-SHORT",
+      "category": "on_page",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 3,
+      "effort": 1
+    },
+    {
+      "id": "PERF-CWV-CLS",
+      "category": "performance",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "id": "PERF-CWV-LCP",
+      "category": "performance",
+      "severity": "critical",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "id": "TECH-CANON-MISMATCH",
+      "category": "technical",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "id": "TECH-CANON-MISSING",
+      "category": "technical",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 1
+    },
+    {
+      "id": "TECH-HTTP-4XX",
+      "category": "technical",
+      "severity": "critical",
+      "affected_count": 1,
+      "impact": 5,
+      "effort": 2
+    },
+    {
+      "id": "TECH-HTTPS-MISSING",
+      "category": "technical",
+      "severity": "critical",
+      "affected_count": 8,
+      "impact": 5,
+      "effort": 2
+    },
+    {
+      "id": "TECH-LANG-MISSING",
+      "category": "technical",
+      "severity": "info",
+      "affected_count": 1,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "id": "TECH-NOINDEX-KEY",
+      "category": "technical",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 1
+    },
+    {
+      "id": "TECH-REDIRECT-CHAIN",
+      "category": "technical",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "id": "TECH-SCHEMA-INVALID",
+      "category": "technical",
+      "severity": "warning",
+      "affected_count": 1,
+      "impact": 4,
+      "effort": 1
+    },
+    {
+      "id": "TECH-VIEWPORT-MISSING",
+      "category": "technical",
+      "severity": "critical",
+      "affected_count": 1,
+      "impact": 5,
+      "effort": 1
+    }
+  ]
+}
