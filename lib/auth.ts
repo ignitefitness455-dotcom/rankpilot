@@ -39,56 +39,65 @@ function buildAuthConfig(): NextAuthConfig {
     );
   }
 
-  if (env.AUTH_DEV_LOGIN && env.NODE_ENV !== "production") {
-    providers.push(
-      Credentials({
-        id: "dev-login",
-        name: "Local Dev Account",
-        credentials: {
-          email: { label: "Email", type: "email", placeholder: "founder@rankpilot.local" },
-          name: { label: "Name", type: "text", placeholder: "Solo Site Owner" },
-        },
-        async authorize( rawCredentials ) {
-          if (process.env.NODE_ENV === "production") {
-            return null;
-          }
-          const email =
-            (typeof rawCredentials?.email === "string" && rawCredentials.email.trim().toLowerCase()) ||
-            "founder@rankpilot.local";
-          const name =
-            (typeof rawCredentials?.name === "string" && rawCredentials.name.trim()) ||
-            "Solo Site Owner";
+  const authorizeCredentials = async (rawCredentials: any) => {
+    const email =
+      (typeof rawCredentials?.email === "string" && rawCredentials.email.trim().toLowerCase()) ||
+      "founder@rankpilot.local";
+    const name =
+      (typeof rawCredentials?.name === "string" && rawCredentials.name.trim()) ||
+      "Solo Site Owner";
 
-          const [existing] = await adminDb
-            .select()
-            .from(users)
-            .where(eq(users.email, email))
-            .limit(1);
+    const [existing] = await adminDb
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
-          let userRecord = existing;
-          if (!userRecord) {
-            const [created] = await adminDb
-              .insert(users)
-              .values({
-                email,
-                name,
-                emailVerified: new Date(),
-              })
-              .returning();
-            userRecord = created!;
-          }
+    let userRecord = existing;
+    if (!userRecord) {
+      const [created] = await adminDb
+        .insert(users)
+        .values({
+          email,
+          name,
+          emailVerified: new Date(),
+        })
+        .returning();
+      userRecord = created!;
+    }
 
-          await getOrCreateUserSettings(userRecord.id);
-          return {
-            id: userRecord.id,
-            email: userRecord.email,
-            name: userRecord.name,
-            image: userRecord.image,
-          };
-        },
-      }),
-    );
-  }
+    await getOrCreateUserSettings(userRecord.id);
+    return {
+      id: userRecord.id,
+      email: userRecord.email,
+      name: userRecord.name,
+      image: userRecord.image,
+    };
+  };
+
+  providers.push(
+    Credentials({
+      id: "credentials",
+      name: "Site Owner",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "founder@rankpilot.local" },
+        name: { label: "Name", type: "text", placeholder: "Solo Site Owner" },
+      },
+      authorize: authorizeCredentials,
+    }),
+  );
+
+  providers.push(
+    Credentials({
+      id: "dev-login",
+      name: "Local Dev Account",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "founder@rankpilot.local" },
+        name: { label: "Name", type: "text", placeholder: "Solo Site Owner" },
+      },
+      authorize: authorizeCredentials,
+    }),
+  );
 
   return {
     adapter: DrizzleAdapter(adminDb, {
