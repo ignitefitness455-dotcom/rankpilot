@@ -1,7 +1,7 @@
-import type { NextRequest } from "next/server";
+import { after, type NextRequest } from "next/server";
 import { apiErrorResponse, apiSuccess } from "@/lib/api/http";
 import { requireAuthUser } from "@/lib/auth";
-import { listProjectCrawls, queueProjectCrawl } from "@/lib/crawler/runner";
+import { executeCrawlById, listProjectCrawls, queueProjectCrawl } from "@/lib/crawler/runner";
 import { startCrawlRequestSchema } from "@/lib/schemas/api/audit";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
 
@@ -35,7 +35,15 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       maxPages: parsed.maxPages,
       maxDepth: parsed.maxDepth,
       render: parsed.render,
-      executeInBackground: true,
+      executeInBackground: false,
+    });
+
+    after(async () => {
+      try {
+        await executeCrawlById(crawl.id, user.id);
+      } catch (err) {
+        console.error("Background crawl execution error:", err);
+      }
     });
 
     return apiSuccess({ crawl }, 201);
