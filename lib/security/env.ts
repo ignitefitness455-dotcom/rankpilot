@@ -78,8 +78,8 @@ export const envSchema = z
 
     GOOGLE_API_KEY: z.string().optional().default(""),
     GEMINI_API_KEY: z.string().optional().default(""),
-    GEMINI_MODEL_PRIMARY: z.string().min(1).default("gemini-4-argon"),
-    GEMINI_MODEL_FAST: z.string().optional().default(""),
+    GEMINI_MODEL_PRIMARY: z.string().min(1).default("gemini-3.8-flash"),
+    GEMINI_MODEL_FAST: z.string().optional().default("gemini-3.8-flash"),
 
     AI_BUDGET_RUN_USD: z.coerce.number().positive().default(0.5),
     AI_BUDGET_PROJECT_DAY_USD: z.coerce.number().positive().default(2.0),
