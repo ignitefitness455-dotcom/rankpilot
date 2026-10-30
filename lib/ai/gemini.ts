@@ -264,9 +264,12 @@ export async function generateGemini<TSchema extends z.ZodTypeAny | undefined = 
   const env = getEnv();
   const thinking: ThinkingLevel = params.thinking ?? "MEDIUM";
 
-  let model = params.modelOverride || env.GEMINI_MODEL_PRIMARY || "gemini-4-argon";
+  let model = params.modelOverride || env.GEMINI_MODEL_PRIMARY || "gemini-3.8-flash";
   if (thinking === "LOW" && env.GEMINI_MODEL_FAST && !params.modelOverride) {
     model = env.GEMINI_MODEL_FAST;
+  }
+  if (model === "gemini-4-argon") {
+    model = "gemini-3.8-flash";
   }
 
   const promptTextLength =
