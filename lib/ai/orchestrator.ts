@@ -508,10 +508,13 @@ export async function runAgentChat(params: RunAgentChatParams): Promise<RunAgent
           break;
         }
 
-        // Record model's functionCall turn
+        // Record model's functionCall turn (preserving thoughtSignature from Gemini)
         conversation.push({
           role: "model",
-          parts: turn.functionCalls.map((fc) => ({ functionCall: fc })),
+          parts:
+            turn.rawModelParts && turn.rawModelParts.length > 0
+              ? turn.rawModelParts
+              : turn.functionCalls.map((fc) => ({ functionCall: fc })),
         });
 
         const responseParts = [];

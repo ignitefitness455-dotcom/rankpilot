@@ -1,4 +1,7 @@
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
+import { requireAuthUser } from "@/lib/auth";
+import { getUserProjects } from "@/lib/projects/service";
 import { OnboardingForm } from "@/components/projects/onboarding-form";
 
 export default async function OnboardingPage({
@@ -7,6 +10,12 @@ export default async function OnboardingPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const user = await requireAuthUser();
+  const userProjects = await getUserProjects(user.id);
+  if (userProjects.length > 0) {
+    redirect(`/${locale}/p/${userProjects[0]!.project.id}/dashboard`);
+  }
+
   const t = await getTranslations({ locale, namespace: "onboarding" });
 
   return (

@@ -74,8 +74,19 @@ function requestSingleHop(
           ...options.headers,
         },
         // Pin the DNS-validated IP at socket connect time to defeat DNS rebinding
-        lookup: (_hostname, _opts, cb) => {
-          cb(null, pinnedIp, family);
+        lookup: (_hostname, opts, cb) => {
+          if (typeof opts === "function") {
+            cb = opts;
+            opts = {};
+          }
+          if (opts && (opts as { all?: boolean }).all) {
+            (cb as (err: Error | null, addresses: Array<{ address: string; family: number }>) => void)(
+              null,
+              [{ address: pinnedIp, family }],
+            );
+          } else {
+            cb(null, pinnedIp, family);
+          }
         },
       },
       (res) => {

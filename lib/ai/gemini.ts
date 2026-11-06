@@ -146,9 +146,17 @@ async function callWithRetries(
   maxAttempts = 3,
 ): Promise<GeminiWireResponse> {
   let lastErr: unknown;
+  const fallbackModels = [
+    req.model,
+    "gemini-3.5-flash-lite",
+    "gemini-flash-lite-latest",
+    "gemini-3-flash-preview",
+  ];
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      return await transport(req);
+      const activeModel = fallbackModels[attempt - 1] || req.model;
+      return await transport({ ...req, model: activeModel });
     } catch (err) {
       lastErr = err;
       const isRetryable =
@@ -157,7 +165,7 @@ async function callWithRetries(
       if (!isRetryable || attempt === maxAttempts) {
         throw err;
       }
-      const backoffMs = Math.min(4000, 250 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 120);
+      const backoffMs = Math.min(2000, 250 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 80);
       await new Promise((r) => setTimeout(r, backoffMs));
     }
   }
@@ -196,6 +204,7 @@ export interface GenerateGeminiResult<TData = unknown> {
   text: string;
   structured: TData;
   functionCalls: GeminiFunctionCall[];
+  rawModelParts?: GeminiPart[];
   citations: GroundingCitation[];
   webSearchQueries: string[];
   searchEntryPointHtml: string | null;
@@ -264,12 +273,12 @@ export async function generateGemini<TSchema extends z.ZodTypeAny | undefined = 
   const env = getEnv();
   const thinking: ThinkingLevel = params.thinking ?? "MEDIUM";
 
-  let model = params.modelOverride || env.GEMINI_MODEL_PRIMARY || "gemini-3.8-flash";
+  let model = params.modelOverride || env.GEMINI_MODEL_PRIMARY || "gemini-3.5-flash-lite";
   if (thinking === "LOW" && env.GEMINI_MODEL_FAST && !params.modelOverride) {
     model = env.GEMINI_MODEL_FAST;
   }
-  if (model === "gemini-4-argon") {
-    model = "gemini-3.8-flash";
+  if (model === "gemini-4-argon" || model === "gemini-3.8-flash") {
+    model = "gemini-3.5-flash-lite";
   }
 
   const promptTextLength =
@@ -355,7 +364,7 @@ export async function generateGemini<TSchema extends z.ZodTypeAny | undefined = 
 
   const executeSingleCall = async (contents: GeminiContent[]) => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), params.timeoutMs ?? 45_000);
+    const timeoutId = setTimeout(() => controller.abort(), params.timeoutMs ?? 25_000);
     try {
       const resp = await callWithRetries(transport, {
         model,
@@ -420,7 +429,7 @@ export async function generateGemini<TSchema extends z.ZodTypeAny | undefined = 
       }
 
       const grounding = extractGroundingCitations(resp);
-      return { resp, text, functionCalls, grounding };
+      return { resp, text, functionCalls, rawModelParts: parts, grounding };
     } finally {
       clearTimeout(timeoutId);
     }
@@ -502,6 +511,7 @@ export async function generateGemini<TSchema extends z.ZodTypeAny | undefined = 
     text: callResult.text,
     structured: structured as TSchema extends z.ZodTypeAny ? z.infer<TSchema> : undefined,
     functionCalls: callResult.functionCalls,
+    rawModelParts: callResult.rawModelParts,
     citations: callResult.grounding.citations,
     webSearchQueries: callResult.grounding.webSearchQueries,
     searchEntryPointHtml: callResult.grounding.searchEntryPointHtml,
